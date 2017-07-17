@@ -8,6 +8,7 @@
     
         {!! Form::label('content', 'タスク') !!}
         {!! Form::text('content') !!}
+        {!! Form::select('status', ['済' => '済', '未' => '未', '保留' => '保留']) !!}
         {!! Form::submit('更新') !!}
     
     {!! Form::close() !!}
