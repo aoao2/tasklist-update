@@ -18,11 +18,11 @@ class TaskController extends Controller
      */
     public function index()
     {
-        $task_a = Task::all();
+        /*$task_a = Task::all();
         
         return view('tasks.index', [
             'taskA' => $task_a,
-        ]);
+        ]);*/
     }
 
     /**
@@ -32,10 +32,10 @@ class TaskController extends Controller
      */
     public function create()
     {
-        $task_c = new Task;
+        $task = new Task;
         
         return view('tasks.create', [
-            'taskC' => $task_c
+            'task' => $task
         ]);
     }
 
@@ -45,6 +45,7 @@ class TaskController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
+    
     public function store(Request $request)
     {
         $this->validate($request, [
@@ -52,11 +53,11 @@ class TaskController extends Controller
             'status' => 'required|max:10'
         ]);
         
-        $task_s = new Task;
-        $task_s->content = $request->content;
-        $task_s->status = $request->status;
-        $task_s->save();
-        
+        $request->user()->tasks()->create([
+            'content' => $request->content,
+            'status' => $request->status
+        ]);
+    
         return redirect('/');
     }
 
@@ -68,10 +69,10 @@ class TaskController extends Controller
      */
     public function show($id)
     {
-        $task_i = Task::find($id);
+        $task = Task::find($id);
         
         return view('tasks.show', [
-            'taskI' => $task_i,
+            'task' => $task,
         ]);
     }
 
@@ -83,10 +84,10 @@ class TaskController extends Controller
      */
     public function edit($id)
     {
-        $task_e = Task::find($id);
+        $task = Task::find($id);
         
         return view('tasks.edit', [
-            'taskE' => $task_e
+            'task' => $task
         ]);
     }
 
@@ -121,7 +122,9 @@ class TaskController extends Controller
     public function destroy($id)
     {
         $task = Task::find($id);
-        $task->delete();
+        if (\Auth::user()->id === $task->user_id) {
+            $task->delete();
+        }
         
         return redirect('/');
     }

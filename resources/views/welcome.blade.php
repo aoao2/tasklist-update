@@ -1,45 +1,35 @@
-<!DOCTYPE html>
-<html>
-    <head>
-        <title>Laravel</title>
+@extends('layout.app')
 
-        <link href="https://fonts.googleapis.com/css?family=Lato:100" rel="stylesheet" type="text/css">
-
-        <style>
-            html, body {
-                height: 100%;
-            }
-
-            body {
-                margin: 0;
-                padding: 0;
-                width: 100%;
-                display: table;
-                font-weight: 100;
-                font-family: 'Lato';
-            }
-
-            .container {
-                text-align: center;
-                display: table-cell;
-                vertical-align: middle;
-            }
-
-            .content {
-                text-align: center;
-                display: inline-block;
-            }
-
-            .title {
-                font-size: 96px;
-            }
-        </style>
-    </head>
-    <body>
-        <div class="container">
-            <div class="content">
-                <div class="title">Laravel 5</div>
+@section('content')
+    @if (Auth::check())
+        <h1><p>{{ $user->name }} のタスク一覧</p></h1>
+        <div class="row">
+            <div class="col-xs-12">
+                <table class="table">
+                    <tr>
+                        <th>#</th>
+                        <th>タスク</th>
+                        <th>ステータス</th>
+                    </tr>
+                    @foreach($tasks as $task)
+                    <tr>
+                        <td>{!! link_to_route('tasks.show', $task->id, ['id' => $task->id]) !!}</td>
+                        <td>{{ $task->content }}</td>
+                        <td>{{ $task->status }}</td>
+                    </tr>
+                    @endforeach
+                </table>
             </div>
+            {!! Form::open(['route' => 'tasks.create', 'method' => 'get']) !!}
+                {!! Form::submit('新規タスクの作成', ['class' => 'btn btn-primary']) !!}
+            {!! Form::close() !!}
         </div>
-    </body>
-</html>
+    @else
+    <div class="center jumbotron">
+        <div class="text-center">
+            <h1>Welcome to Tasklist</h1>
+            {!! link_to_route('signup.get', 'Sign up now!', null, ['class' => 'btn btn-lg btn-primary']) !!}
+        </div>
+    </div>
+    @endif
+@endsection
